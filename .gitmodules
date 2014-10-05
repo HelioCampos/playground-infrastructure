@@ -1,0 +1,6 @@
+[submodule "chef/kitchen-playground"]
+	path = chef/kitchen-playground
+	url = https://github.com/afronski/kitchen-playground
+[submodule "chef/omnibus-knife-solo"]
+	path = chef/omnibus-knife-solo
+	url = https://github.com/afronski/omnibus-knife-solo
