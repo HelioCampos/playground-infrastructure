@@ -1,5 +1,0 @@
-# TODO
-
-- RabbitMQ
-- Redis
-- MongoDB

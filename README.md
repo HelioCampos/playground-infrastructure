@@ -2,9 +2,17 @@
 
 ## TODO
 
-- Proper *.gitignore* file.
-- Clean up in TODOs.
-  - Vagrant with Graphite, Grafana, Riemann - monitoring, Ganglia maybe?
-  - Other servers: HBase, Redis, FoundationDB.
-    - Maybe even submodule with reusable recipes?
- - Basic starter for Jepsen, even the simplest case.
+- Recipes:
+  - Graphite
+  - Grafana
+  - EventStore
+  - HBase
+  - Redis
+  - FoundationDB
+  - Riemann
+  - Ganglia
+- Jepsen:
+  - Vagrant with 5 virtual machines and proper configuration.
+  - Installation.
+- Docker:
+  - Sample containers.
