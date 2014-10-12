@@ -7,3 +7,6 @@
 [submodule "vagrant/vagrant-storm"]
 	path = vagrant/vagrant-storm
 	url = git@github.com:afronski/vagrant-storm.git
+[submodule "chef/localhost-with-chef-solo"]
+	path = chef/localhost-with-chef-solo
+	url = git@github.com:afronski/localhost-with-chef-solo.git
