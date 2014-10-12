@@ -4,3 +4,6 @@
 [submodule "chef/omnibus-knife-solo"]
 	path = chef/omnibus-knife-solo
 	url = https://github.com/afronski/omnibus-knife-solo
+[submodule "vagrant/vagrant-storm"]
+	path = vagrant/vagrant-storm
+	url = git@github.com:afronski/vagrant-storm.git
