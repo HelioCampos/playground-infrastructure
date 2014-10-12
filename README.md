@@ -6,8 +6,6 @@
   - Graphite
   - Grafana
   - EventStore
-  - HBase
-  - Redis
   - FoundationDB
   - Riemann
   - Ganglia
