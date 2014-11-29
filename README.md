@@ -1,4 +1,4 @@
-# playground-repository
+# playground-infrastructure
 
 ## TODO
 
