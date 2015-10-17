@@ -9,6 +9,8 @@
   - FoundationDB
   - Riemann
   - Ganglia
+  - Consul
+  - Gatling
 - Jepsen:
   - Vagrant with 5 virtual machines and proper configuration.
   - Installation.
