@@ -3,7 +3,16 @@
 ## TODO
 
 - Prepare examples:
-  - Redis, MongoDB, PostgreSQL (document all shell scripts which I'm using with Docker)
-  - Graphite, Grafana and Riemann (simple project and configuration)
-  - EventStore, FoundationDB, Riak (document all shell scripts which I'm using with Docker)
-  - Consul, Ganglia, Jepsen, Terraform (simple projects and configuration)
+  - Docker - *document all shell scripts and names which I'm using*.
+    - Redis, MongoDB, PostgreSQL
+  - Ansible:
+    - krmt (https://github.com/mattsta/krmt) 
+    - Graphite
+    - Grafana
+    - Riemann
+    - Consul
+    - EventStore
+    - FoundationDB
+    - Riak
+    - Ganglia
+    - Jepsen
