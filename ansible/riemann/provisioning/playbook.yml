@@ -1,0 +1,88 @@
+---
+- hosts: all
+  vars:
+    version: 0.2.10
+
+    user: "{{ ansible_ssh_user }}"
+    group: admin
+
+    java_packages:
+      - openjdk-7-jdk
+
+    ruby_version_major: 2.0
+    ruby_version_revision: 647
+    ruby_version_norev: "{{ ruby_version_major }}.0"
+
+    ruby_version: ruby-{{ ruby_version_norev }}-p{{ ruby_version_revision }}
+    ruby_checksum: c88aaf5b4ec72e2cb7d290ff854f04d135939f6134f517002a9d65d5fc5e5bec
+    ruby_download_location: http://cache.ruby-lang.org/pub/ruby/{{ ruby_version_major }}/ruby-{{ ruby_version_norev }}-p{{ ruby_version_revision }}.tar.gz
+
+  roles:
+    - smola.java
+    - joshualund.ruby-common
+
+  tasks:
+    - name: Update apt cache
+      apt: update_cache=yes
+
+    - name: Get helpful packages
+      apt: pkg={{ item }} state=installed
+      with_items:
+        - wget
+        - curl
+        - htop
+
+    - name: Get Riemann package for Debian / Ubuntu
+      get_url: url=https://aphyr.com/riemann/riemann_{{ version }}_all.deb dest=/tmp/riemann.deb mode=0644
+
+    - name: Install it
+      apt: deb=/tmp/riemann.deb
+      notify:
+        - restart Riemann
+
+    - name: Install all necessary gems
+      gem: user_install=yes name={{ item }} state=latest
+      sudo: yes
+      sudo_user: "{{ user }}"
+      with_items:
+        - riemann-client
+        - riemann-tools
+        - riemann-dash
+      notify:
+        - restart Riemann
+
+    - name: Configure log files
+      file: path={{ item }} state=touch owner={{ user }} group={{ group }} mode=0644
+      with_items:
+        - /var/log/riemann-host-statistics.log
+        - /var/log/riemann-dashboard.log
+
+    - name: Configure pid directory
+      file: path=/var/run/riemann state=directory owner={{ user }} group={{ group }}
+
+    - name: Create scripts
+      template: src=templates/{{ item }}.sh.j2 dest=/home/{{ user }}/{{ item }}.sh owner={{ user }} group={{ group }} mode=0755
+      with_items:
+        - riemann-host-statistics
+        - riemann-dashboard
+
+    - name: Enable host statistics
+      shell: "start-stop-daemon --start --quiet --pidfile /var/run/riemann/host-statistics.pid --exec /home/{{ user }}/riemann-host-statistics.sh"
+      sudo: yes
+      sudo_user: "{{ user }}"
+      args:
+        executable: "/bin/bash"
+
+    - name: Configure dashboard
+      template: src=templates/riemann-dash-config.rb.j2 dest=/home/{{ user }}/riemann-dash.rb owner={{ user }} group={{ group }} mode=0644
+
+    - name: Enable host statistics
+      shell: "start-stop-daemon --start --quiet --pidfile /var/run/riemann/dashboard.pid --exec /home/{{ user }}/riemann-dashboard.sh"
+      sudo: yes
+      sudo_user: "{{ user }}"
+      args:
+        executable: "/bin/bash"
+
+  handlers:
+    - name: restart Riemann
+      service: name=riemann state=restarted

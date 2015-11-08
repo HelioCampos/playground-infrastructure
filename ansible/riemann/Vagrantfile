@@ -1,0 +1,24 @@
+Vagrant.configure(2) do |config|
+  config.vm.box = 'hashicorp/precise64'
+
+  config.vm.provider :virtualbox do |vm|
+    vm.name = 'riemann'
+
+    vm.memory = 512
+    vm.cpus = 1
+
+    vm.customize ['modifyvm', :id, '--natdnshostresolver1', 'on']
+    vm.customize ['modifyvm', :id, '--ioapic', 'on']
+  end
+
+  config.vm.hostname = 'riemann'
+  config.vm.network "forwarded_port", guest: 4567, host: 4567
+  config.vm.network "forwarded_port", guest: 5556, host: 5556
+
+  config.vm.provision 'ansible' do |ansible|
+    ansible.playbook = 'provisioning/playbook.yml'
+    ansible.inventory_path = 'provisioning/inventory'
+
+    ansible.sudo = true
+  end
+end
