@@ -1,0 +1,27 @@
+description "Consul client process"
+
+start on (local-filesystems and net-device-up IFACE=eth0)
+stop on runlevel [!12345]
+
+respawn
+
+setuid consul
+setgid admin
+
+script
+  if [ -f "/etc/service/consul" ]; then
+    . /etc/service/consul
+  fi
+
+  export GOMAXPROCS=`nproc`
+
+  BIND=`ifconfig eth0 | grep "inet addr" | awk '{ print substr($2,6) }'`
+
+  exec /usr/local/bin/consul agent  \
+        -server                     \
+        -config-dir="/etc/consul.d" \
+        -client=$BIND               \
+        -bind=$BIND                 \
+        ${CONSUL_FLAGS}             \
+       >> /var/log/consul.log 2>&1
+end script

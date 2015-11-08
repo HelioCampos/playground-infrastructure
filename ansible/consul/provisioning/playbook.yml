@@ -1,0 +1,81 @@
+---
+- hosts: all
+  vars:
+    arch: amd64
+    version: 0.5.2
+
+    service_name: HelloWorldService
+    node_name: agent-one
+
+    user: consul
+    group: admin
+
+  tasks:
+    - name: Update apt cache
+      apt: update_cache=yes
+
+    - name: Install all required packages
+      apt: pkg={{ item }} state=installed
+      with_items:
+        - unzip
+        - wget
+        - dnsmasq
+        - curl
+
+    - name: Create user
+      user: name={{ user }} shell=/bin/bash group={{ group }}
+
+    - name: Download specified version of web UI
+      get_url: url=https://dl.bintray.com/mitchellh/consul/{{ version }}_web_ui.zip dest=/tmp/web_ui.zip mode=0440
+
+    - name: Unpack web UI
+      unarchive: src=/tmp/web_ui.zip dest=/home/{{ user }} copy=no
+
+    - name: Download specified version of app
+      get_url: url=https://dl.bintray.com/mitchellh/consul/{{ version }}_linux_{{ arch }}.zip dest=/tmp/consul.zip mode=0440
+
+    - name: Unpack app
+      unarchive: src=/tmp/consul.zip dest=/tmp copy=no
+
+    - name: Prepare executable
+      file: path=/tmp/consul owner={{ user }} group={{ group }} mode=0755
+
+    - name: Prepare logs
+      file: path=/var/log/consul.log state=touch owner={{ user }} group={{ group }} mode=0644
+
+    - name: Move it to the local directory
+      command: mv /tmp/consul /usr/local/bin/consul
+
+    - name: Create new directories
+      file: path={{ item }} state=directory owner={{ user }} group={{ group }}
+      with_items:
+        - /etc/consul.d
+        - /mnt/consul
+        - /etc/service
+
+    - name: Setup service flags
+      template: src=templates/service_flags.j2 dest=/etc/service/consul owner={{ user }} group=sudo mode=0644
+      notify:
+        - restart consul
+
+    - name: Setup Consul as a service
+      template: src=templates/upstart.conf.j2 dest=/etc/init/consul.conf owner={{ user }} group={{ group }} mode=0644
+      notify:
+        - restart consul
+
+    - name: Setup dnsmasq entry
+      template: src=templates/dnsmasq_consul.j2 dest=/etc/dnsmasq.d/10-consul owner={{ user }} group={{ group }} mode=0644
+      notify:
+        - restart dnsmasq
+
+    - name: Setup example service in Consul
+      template: src=templates/service.json.j2 dest=/etc/consul.d/service.json owner={{ user }} group={{ group }} mode=0644
+      notify:
+        - restart consul
+
+  handlers:
+    - name: restart dnsmasq
+      service: name=dnsmasq state=restarted enabled=yes
+
+    - name: restart consul
+      service: name=consul state=restarted enabled=yes
