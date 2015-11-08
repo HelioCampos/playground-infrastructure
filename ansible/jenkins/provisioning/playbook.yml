@@ -1,0 +1,15 @@
+---
+- hosts: all
+  vars:
+    java_packages:
+      - openjdk-7-jdk
+
+    jenkins_hostname: localhost
+    jenkins_plugins:
+      - git
+      - ssh
+      - job-dsl
+
+  roles:
+    - geerlingguy.java
+    - geerlingguy.jenkins
