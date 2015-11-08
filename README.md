@@ -9,8 +9,6 @@
     - krmt (https://github.com/mattsta/krmt) 
     - Graphite
     - Grafana
-    - Riemann
-    - Consul
     - EventStore
     - FoundationDB
     - Riak
