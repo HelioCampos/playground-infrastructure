@@ -1,0 +1,36 @@
+---
+- hosts: all
+  vars:
+    version: 0.2.10
+
+    user: "{{ ansible_ssh_user }}"
+    group: admin
+
+    java_packages:
+      - openjdk-7-jdk
+
+  roles:
+    - smola.java
+
+  tasks:
+    - name: Update apt cache
+      apt: update_cache=yes
+
+    - name: Get helpful packages
+      apt: pkg={{ item }} state=installed
+      with_items:
+        - wget
+        - curl
+        - htop
+
+    - name: Get Riemann package for Debian / Ubuntu
+      get_url: url=https://aphyr.com/riemann/riemann_{{ version }}_all.deb dest=/tmp/riemann.deb mode=0644
+
+    - name: Install it
+      apt: deb=/tmp/riemann.deb
+      notify:
+        - restart Riemann
+
+  handlers:
+    - name: restart Riemann
+      service: name=riemann state=restarted
