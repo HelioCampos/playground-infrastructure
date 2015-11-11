@@ -1,0 +1,25 @@
+---
+- hosts: all
+  tasks:
+    - name: Install all required packages
+      apt: pkg={{ item }} state=installed
+      with_items:
+        - unzip
+        - wget
+        - htop
+        - curl
+
+    - name: Generate UTF-8 locale
+      locale_gen: name=en_US.UTF-8 state=present
+
+    - name: Add ESL repository
+      apt_repository: repo='deb http://packages.erlang-solutions.com/ubuntu trusty contrib' state=present
+
+    - name: Add APT key for ESL repository
+      apt_key: url=http://packages.erlang-solutions.com/ubuntu/erlang_solutions.asc state=present
+
+    - name: Update apt cache
+      apt: update_cache=yes
+
+    - name: Install newest Erlang
+      apt: pkg=esl_erlang state=installed
