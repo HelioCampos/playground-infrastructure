@@ -1,23 +1,21 @@
 Vagrant.configure(2) do |config|
-  config.vm.box = 'hashicorp/precise64'
+  config.vm.define 'all_in_one' do |all_in_one|
+    all_in_one.vm.box = 'ubuntu/trusty64'
+    all_in_one.vm.hostname = 'tsung-all-in-one'
 
-  config.vm.provider :virtualbox do |vm|
-    vm.name = 'erlang-elixir'
+    all_in_one.vm.provider :virtualbox do |vm|
+      vm.name = 'tsung-all-in-one'
+      vm.memory = 1024
+      vm.cpus = 1
+    end
 
-    vm.memory = 512
-    vm.cpus = 1
+    all_in_one.vm.network :forwarded_port, guest: 22, host: 2230, id: 'ssh'
+    all_in_one.vm.network 'private_network', ip: '192.168.1.10'
 
-    vm.customize ['modifyvm', :id, '--natdnshostresolver1', 'on']
-    vm.customize ['modifyvm', :id, '--ioapic', 'on']
-  end
-
-  config.vm.hostname = 'erlang-elixir'
-  config.vm.network "forwarded_port", guest: 8080, host: 8080
-
-  config.vm.provision 'ansible' do |ansible|
-    ansible.playbook = 'provisioning/playbook.yml'
-    ansible.inventory_path = 'provisioning/inventory'
-
-    ansible.sudo = true
+    all_in_one.vm.provision 'ansible' do |ansible|
+      ansible.limit = 'all'
+      ansible.inventory_path = 'playbooks/machines.vagrant'
+      ansible.playbook = 'playbooks/vagrant-all-in-one.yml'
+    end
   end
 end

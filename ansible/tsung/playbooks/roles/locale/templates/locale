@@ -1,0 +1,3 @@
+LANG="{{ default_locale }}"
+LC_ALL="{{ default_locale }}"
+LC_COLLATE=C

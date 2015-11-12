@@ -1,0 +1,17 @@
+---
+- hosts: injectors
+  sudo: True
+  roles:
+    - hosts
+    - resolv
+    - locale
+    - common-tools
+    - esl-erlang
+
+- hosts: controller
+  roles:
+    - hosts
+    - resolv
+    - locale
+    - common-tools
+    - esl-erlang

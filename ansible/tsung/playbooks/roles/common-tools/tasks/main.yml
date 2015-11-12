@@ -1,0 +1,9 @@
+- name: Update APT cache
+  apt: update_cache=yes
+
+- name: Install common tools
+  apt: pkg={{ item }} state=installed
+  with_items:
+    - wget
+    - curl
+    - htop

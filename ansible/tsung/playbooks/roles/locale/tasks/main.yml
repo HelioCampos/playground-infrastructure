@@ -1,0 +1,10 @@
+- name: Generating default locale
+  locale_gen: name={{ default_locale }} state=present
+
+- name: Setting default locale
+  template:
+    src=./roles/locale/templates/locale
+    dest=/etc/default/locale
+    owner=root
+    group=root
+    mode=0644

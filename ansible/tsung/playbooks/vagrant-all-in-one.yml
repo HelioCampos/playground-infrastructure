@@ -1,0 +1,19 @@
+---
+- hosts: all
+  sudo: True
+
+  vars:
+    - controller: { "private_ip_address": 192.168.1.10,
+                    "private_dns_name": "tsung_all_in_one.localhost",
+                    "private_short_name": "tsung_all_in_one" }
+    - injectors:
+      - { "private_ip_address": 192.168.1.10,
+          "private_dns_name": "tsung_all_in_one.localhost",
+          "private_short_name": "tsung_all_in_one" }
+
+  roles:
+    - hosts
+    - resolv
+    - locale
+    - common-tools
+    - esl-erlang

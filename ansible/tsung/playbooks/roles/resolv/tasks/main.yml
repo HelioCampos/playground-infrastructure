@@ -1,0 +1,7 @@
+- name: Providing resolv.conf file
+  template:
+    src=./roles/resolv/templates/resolv.conf
+    dest=/etc/resolv.conf
+    owner=root
+    group=root
+    mode=0644

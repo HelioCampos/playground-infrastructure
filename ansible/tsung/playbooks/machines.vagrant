@@ -1,0 +1,15 @@
+[controller]
+192.168.1.10
+
+[injectors]
+192.168.1.10
+
+[controller:vars]
+ansible_ssh_host=127.0.0.1
+ansible_ssh_port=2230
+ansible_ssh_user=vagrant
+
+[injectors:vars]
+ansible_ssh_host=127.0.0.1
+ansible_ssh_port=2230
+ansible_ssh_user=vagrant

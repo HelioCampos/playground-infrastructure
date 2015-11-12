@@ -1,0 +1,8 @@
+- name: Add ESL repository
+  apt_repository: repo='deb http://packages.erlang-solutions.com/ubuntu trusty contrib' state=present
+
+- name: Add APT key for ESL repository
+  apt_key: url=http://packages.erlang-solutions.com/ubuntu/erlang_solutions.asc state=present
+
+- name: Install newest Erlang package
+  apt: pkg=esl-erlang state=installed
