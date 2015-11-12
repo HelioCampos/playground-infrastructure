@@ -1,0 +1,21 @@
+Vagrant.configure(2) do |config|
+  config.vm.define 'ganglia' do |ganglia|
+    ganglia.vm.box = 'bento/centos-6.7'
+    ganglia.vm.hostname = 'ganglia'
+
+    ganglia.vm.provider :virtualbox do |vm|
+      vm.name = 'ganglia'
+      vm.memory = 1024
+      vm.cpus = 1
+    end
+
+    ganglia.vm.network :forwarded_port, guest: 22, host: 2230, id: 'ssh'
+    ganglia.vm.network 'private_network', ip: '192.168.1.10'
+
+    ganglia.vm.provision 'ansible' do |ansible|
+      ansible.limit = 'all'
+      ansible.inventory_path = 'playbooks/machines.vagrant'
+      ansible.playbook = 'playbooks/ganglia.yml'
+    end
+  end
+end

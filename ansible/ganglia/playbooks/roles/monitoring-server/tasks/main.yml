@@ -1,0 +1,23 @@
+- name: Install Ganglia for Monitoring, with dashboards
+  yum: pkg={{ item }} state=installed
+  with_items:
+    - ganglia
+    - ganglia-gmetad
+    - ganglia-web
+  notify:
+    - Restart httpd
+
+- name: Configure gmetad
+  template:
+    src=./roles/monitoring-server/templates/gmetad.conf
+    dest=/etc/ganglia/gmetad.conf
+    owner=root
+    group=root
+  notify:
+    - Restart gmetad
+
+- name: Verify that all services required by Ganglia Monitoring are running
+  service: name={{ item }} state=running
+  with_items:
+    - httpd
+    - gmetad

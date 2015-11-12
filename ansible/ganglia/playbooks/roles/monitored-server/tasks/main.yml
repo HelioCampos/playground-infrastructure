@@ -1,0 +1,14 @@
+- name: Install Ganglia Node
+  yum: pkg=ganglia-gmond state=installed
+
+- name: Configure gmond
+  template:
+    src=./roles/monitored-server/templates/gmond.conf
+    dest=/etc/ganglia/gmond.conf
+    owner=root
+    group=root
+  notify:
+    - Restart gmond
+
+- name: Verify that Ganglia Node service is running
+  service: name=gmond state=running

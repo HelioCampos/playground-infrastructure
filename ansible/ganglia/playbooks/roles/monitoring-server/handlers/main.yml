@@ -1,0 +1,5 @@
+- name: Restart gmetad
+  service: name=gmetad state=restarted
+
+- name: Restart httpd
+  service: name=httpd state=restarted
