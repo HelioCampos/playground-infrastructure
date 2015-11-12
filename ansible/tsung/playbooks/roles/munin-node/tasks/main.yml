@@ -1,0 +1,22 @@
+- name: Install Munin Node from package
+  apt: pkg=munin-node state=present
+
+- name: Configure Munin Node
+  template:
+    src=./roles/munin-node/templates/munin-node.conf.j2
+    dest=/etc/munin/munin-node.conf
+    owner=root
+    group=root
+    mode=0640
+
+- name: Add TCP plugin
+  file: src=/usr/share/munin/plugins/tcp dest=/etc/munin/plugins/tcp state=link
+
+- name: Remove logged users plugin
+  file: path=/etc/munin/plugins/users state=absent
+
+- name: Remove uptime plugin
+  file: path=/etc/munin/plugins/uptime state=absent
+
+- name: Restart Munin Node
+  service: name=munin-node state=restarted

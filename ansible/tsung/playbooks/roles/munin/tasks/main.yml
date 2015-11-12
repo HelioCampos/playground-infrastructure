@@ -1,0 +1,35 @@
+- name: Install Munin from package
+  apt: pkg={{ item }} state=present
+  with_items:
+    - munin
+    - yaws
+
+- name: Configuring Munin
+  template:
+    src=./roles/munin/templates/munin.conf.j2
+    dest=/etc/munin/munin.conf
+    owner=root
+    group=root
+    mode=0644
+
+- name: Configuring Munin nodes
+  template:
+    src=./roles/munin/templates/nodes.conf.j2
+    dest=/etc/munin/munin-conf.d/nodes.conf
+    owner=root
+    group=root
+    mode=0644
+
+- name: Restarting Cron service
+  service: name=cron state=restarted
+
+- name: Configure Munin master site
+  template:
+    src=./roles/munin/templates/yaws-localhost.conf
+    dest=/etc/yaws/conf.avail/localhost.conf
+    owner=root
+    group=yaws
+    mode=0640
+
+- name: Restarting Yaws service
+  service: name=yaws state=restarted

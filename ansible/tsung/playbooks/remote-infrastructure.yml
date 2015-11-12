@@ -6,7 +6,8 @@
     - resolv
     - locale
     - common-tools
-    - esl-erlang
+    - erlang
+    - munin-node
 
 - hosts: controller
   roles:
@@ -14,4 +15,6 @@
     - resolv
     - locale
     - common-tools
-    - esl-erlang
+    - erlang
+    - munin
+    - munin-node

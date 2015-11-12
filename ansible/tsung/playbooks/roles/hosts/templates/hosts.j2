@@ -1,18 +1,7 @@
-# IPv4:
-127.0.0.1 localhost
+127.0.0.1 localhost.localdomain localhost
 
-# IPv6:
-::1 ip6-localhost ip6-loopback
-fe00::0 ip6-localnet
-ff00::0 ip6-mcastprefix
-ff02::1 ip6-allnodes
-ff02::2 ip6-allrouters
-ff02::3 ip6-allhosts
-
-# Controller:
 {{controller.private_ip_address}} {{controller.private_dns_name}} {{controller.private_short_name}}
 
-# Injectors:
 {% for node in injectors %}
 {{node.private_ip_address}} {{node.private_dns_name}} {{node.private_short_name}}
 {% endfor %}

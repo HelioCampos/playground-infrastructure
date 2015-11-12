@@ -1,0 +1,11 @@
+- name: Install Erlang packages
+  apt: pkg={{ item }} state=installed
+  with_items:
+  - erlang-base
+  - erlang-crypto
+  - erlang-eunit
+  - erlang-inets
+  - erlang-snmp
+  - erlang-ssl
+  - erlang-xmerl
+  - erlang-dev

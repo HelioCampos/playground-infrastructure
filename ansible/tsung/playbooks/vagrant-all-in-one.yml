@@ -3,17 +3,17 @@
   sudo: True
 
   vars:
-    - controller: { "private_ip_address": 192.168.1.10,
-                    "private_dns_name": "tsung_all_in_one.localhost",
-                    "private_short_name": "tsung_all_in_one" }
+    - controller_munin: ^192\.168\.1\.10$
+
+    - controller: { "private_ip_address": 192.168.1.10, "private_dns_name": "controller.localdomain", "private_short_name": "controller" }
     - injectors:
-      - { "private_ip_address": 192.168.1.10,
-          "private_dns_name": "tsung_all_in_one.localhost",
-          "private_short_name": "tsung_all_in_one" }
+      - { "private_ip_address": 192.168.1.10, "private_dns_name": "injector1.localdomain", "private_short_name": "injector1" }
 
   roles:
     - hosts
     - resolv
     - locale
     - common-tools
-    - esl-erlang
+    - erlang
+    - munin
+    - munin-node
