@@ -1,4 +1,3 @@
----
 - hosts: all
   sudo: True
 
@@ -7,7 +6,7 @@
 
     - controller: { "private_ip_address": 192.168.1.10, "private_dns_name": "controller.localdomain", "private_short_name": "controller" }
     - injectors:
-      - { "private_ip_address": 192.168.1.10, "private_dns_name": "injector1.localdomain", "private_short_name": "injector1" }
+      - { "private_ip_address": 192.168.1.10, "private_dns_name": "injector1.localdomain", "private_short_name": "injector1", "cpu": 1 }
 
   roles:
     - hosts
@@ -17,3 +16,6 @@
     - erlang
     - munin
     - munin-node
+    - tsung
+    - tsung_scenario
+    - tsung_reports

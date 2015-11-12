@@ -1,0 +1,3 @@
+tsung_user_name: tsung
+tsung_destination: /usr/local/src/tsung
+tsung_version: v1.6.0

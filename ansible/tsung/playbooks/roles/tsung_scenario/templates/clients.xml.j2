@@ -1,0 +1,5 @@
+<clients>
+  {% for node in injectors %}
+    <client host="{{node.private_short_name}}" cpu="{{node.cpu}}" />
+  {% endfor %}
+  </clients>

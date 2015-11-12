@@ -1,4 +1,5 @@
----
+# TODO: Add file with node variables here.
+
 - hosts: injectors
   sudo: True
   roles:
@@ -8,6 +9,7 @@
     - common-tools
     - erlang
     - munin-node
+    - tsung
 
 - hosts: controller
   roles:
@@ -18,3 +20,6 @@
     - erlang
     - munin
     - munin-node
+    - tsung
+    - tsung_scenario
+    - tsung_reports

@@ -1,0 +1,13 @@
+- name: Install additional packages for Tsung reporting facilities
+  apt: pkg={{ item }} state=present
+  with_items:
+    - gnuplot
+    - libtemplate-perl
+
+- name: Create logs directory for Tsung
+  file:
+    path=/home/{{ tsung_user_name }}/logs
+    mode=0755
+    owner={{ tsung_user_name }}
+    group={{ tsung_user_name }}
+    state=directory

@@ -1,0 +1,43 @@
+- name: Create Tsung user
+  user:  name={{ tsung_user_name }} shell=/bin/bash
+
+- name: Create SSH configuration directory
+  file:
+    path=/home/{{ tsung_user_name }}/.ssh
+    mode=700
+    owner={{ tsung_user_name }}
+    group={{ tsung_user_name }}
+    state=directory
+
+- name: Create SSH private key
+  template:
+    src=./roles/tsung/templates/id_dsa
+    dest=/home/{{ tsung_user_name }}/.ssh/id_dsa
+    owner={{ tsung_user_name }}
+    group={{ tsung_user_name }}
+    mode=0600
+
+- name: Creating authorized_keys file
+  authorized_key:
+    user={{ tsung_user_name }}
+    key="{{ lookup('file', './roles/tsung/templates/id_dsa.pub') }}"
+
+- name: Create SSH config
+  template:
+    src=./roles/tsung/templates/config
+    dest=/home/{{tsung_user_name}}/.ssh/config
+    owner={{ tsung_user_name }}
+    group={{ tsung_user_name }}
+    mode=0600
+
+- name: Clone Tsung source code
+  git: repo=https://github.com/processone/tsung.git dest={{tsung_destination}} version={{tsung_version}}
+
+- name: configure
+  shell: ./configure chdir={{tsung_destination}} creates={{tsung_destination}}/config.status
+
+- name: make
+  shell: /usr/bin/make chdir={{tsung_destination}} creates={{tsung_destination}}/ebin/tsung.app
+
+- name: make install
+  shell: /usr/bin/make install chdir={{tsung_destination}}
