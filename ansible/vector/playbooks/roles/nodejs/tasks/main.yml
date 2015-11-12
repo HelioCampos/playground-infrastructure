@@ -1,0 +1,14 @@
+- name: Install Node.js and NPM
+  apt: pkg={{ item }} state=installed
+  with_items:
+    - nodejs
+    - npm
+
+- name: Create node executable
+  file: src=/usr/bin/nodejs dest=/usr/bin/node owner=root group=root state=link
+
+- name: Install bower
+  npm: name=bower global=yes
+
+- name: Install gulp
+  npm: name=gulp global=yes

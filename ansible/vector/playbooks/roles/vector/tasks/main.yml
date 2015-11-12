@@ -1,0 +1,24 @@
+- name: Create vector user
+  user:  name={{ vector_user_name }} shell=/bin/bash
+
+- name: Clone vector source code
+  sudo: yes
+  sudo_user: vector
+  git: repo=https://github.com/Netflix/vector.git dest={{ vector_destination }} version={{ vector_version }}
+
+- name: bower install
+  sudo: yes
+  sudo_user: vector
+  bower: path={{ vector_destination }}
+
+- name: npm install
+  sudo: yes
+  sudo_user: vector
+  npm: path={{ vector_destination }}
+
+- name: gulp
+  sudo: yes
+  sudo_user: vector
+  shell: gulp
+  args:
+    chdir: "{{ vector_destination }}"

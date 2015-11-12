@@ -1,0 +1,11 @@
+- name: Install PCP
+  apt: pkg={{ item }} state=installed
+  with_items:
+    - pcp
+    - pcp-webapi
+
+- name: Start PCP service
+  service: name=pmcd state=restarted
+
+- name: Start PCP-web service
+  service: name=pmwebd state=restarted

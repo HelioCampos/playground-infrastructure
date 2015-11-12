@@ -1,0 +1,17 @@
+- name: Install Yaws from package
+  apt: pkg={{ item }} state=present
+  with_items:
+    - erlang
+    - erlang-yaws
+    - yaws
+
+- name: Configure vector master site
+  template:
+    src=./roles/yaws/templates/localhost.conf.j2
+    dest=/etc/yaws/conf.avail/localhost.conf
+    owner=root
+    group=yaws
+    mode=0640
+
+- name: Restarting Yaws service
+  service: name=yaws state=restarted
