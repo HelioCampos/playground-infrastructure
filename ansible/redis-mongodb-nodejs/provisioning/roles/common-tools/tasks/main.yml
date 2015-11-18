@@ -1,0 +1,26 @@
+- name: Enable EPEL repository
+  yum: name="https://dl.fedoraproject.org/pub/epel/epel-release-latest-{{ ansible_distribution_major_version }}.noarch.rpm" state=present
+
+- name: Import EPEL GPG key
+  rpm_key: key="/etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-{{ ansible_distribution_major_version }}"
+
+- name: Install all packages from 'Development tools' group
+  yum: name="@Development tools" state=present
+
+- name: Install common development tools
+  yum: name={{ item }} state=present
+  with_items:
+    - vim
+    - netstat-nat
+    - lsof
+    - nmap
+    - man
+    - mc
+    - wget
+    - curl
+    - git
+    - htop
+    - cmake
+    - ImageMagick
+    - openssl-devel
+    - libselinux-python

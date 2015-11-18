@@ -1,0 +1,4 @@
+.vagrant/
+
+/provisioning/roles/mrlesmithjr.redis
+/provisioning/roles/williamyeh.mongodb

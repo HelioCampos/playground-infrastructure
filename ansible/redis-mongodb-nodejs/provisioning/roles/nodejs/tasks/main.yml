@@ -1,0 +1,35 @@
+- name: Install nvm
+  sudo: yes
+  sudo_user: "{{ nvm.user }}"
+  git: repo=https://github.com/creationix/nvm.git dest=~/.nvm version={{ nvm.version }}
+
+- name: Source nvm in ~/.bashrc
+  sudo: yes
+  sudo_user: "{{ nvm.user }}"
+  lineinfile: >
+    dest=~/.bashrc
+    line="source ~/.nvm/nvm.sh"
+    create=yes
+
+- name: Install specified Node.js version
+  command: sudo -iu {{ nvm.user }} nvm install {{ nvm.node_version }}
+  register: nvm_install_result
+  changed_when: "'is already installed.' not in nvm_install_result.stdout"
+
+- name: Check if the specified version is the default one
+  shell: sudo -iu {{ nvm.user }} nvm ls | grep -e 'default -> {{ nvm.node_version }}'
+  register: nvm_check_default
+  changed_when: False
+  ignore_errors: True
+
+- name: Set default node version to specified
+  command: sudo -iu {{ nvm.user }} nvm alias default {{ nvm.node_version }}
+  when: nvm_check_default | failed
+
+- name: Install global Node.js packages
+  command: sudo -iu {{ nvm.user }} npm install --global {{ item }}
+  with_items:
+    - bower
+    - gulp
+    - grunt
+    - mocha
