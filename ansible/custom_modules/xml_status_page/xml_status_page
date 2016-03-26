@@ -2,10 +2,10 @@
 
 -include_lib("xmerl/include/xmerl.hrl").
 
--record(arguments, { host, % = "localhost",
-                     port, % = 9999,
-                     xpath, % = "//statistics",
-                     name % = "config"
+-record(arguments, { host  = "localhost",
+                     port  = 9999,
+                     xpath = "//statistics",
+                     name  = "config"
                    }).
 
 extract_attributes(#xmlElement{attributes = A}) -> A.
