@@ -1,0 +1,69 @@
+#!/usr/bin/env escript
+
+-include_lib("xmerl/include/xmerl.hrl").
+
+-record(arguments, { host, % = "localhost",
+                     port, % = 9999,
+                     xpath, % = "//statistics",
+                     name % = "config"
+                   }).
+
+extract_attributes(#xmlElement{attributes = A}) -> A.
+
+get_attribute(Name, [ #xmlAttribute{name = Name, value = V} | _]) -> V;
+get_attribute(Name, [ _ | T]) -> get_attribute(Name, T);
+get_attribute(_, []) -> none.
+
+get_attribute_from(Name, El) ->
+    get_attribute(Name, extract_attributes(El)).
+
+handle_result(200, Body) ->
+    {Parse, _} = xmerl_scan:string(Body),
+    {ok, Parse};
+handle_result(_, Body) ->
+    {error, io_lib:format("Scraping failed '~p'.", [ Body ])}.
+
+request(Context) ->
+    URL = lists:flatten(io_lib:format("http://~s:~s/", [ Context#arguments.host, Context#arguments.port ])),
+
+    ReqResult = httpc:request(get, {URL, []}, [], []),
+    {ok, {{_, ReturnCode, _}, _, Body}} = ReqResult,
+
+    handle_result(ReturnCode, Body).
+
+extract(Document, Context) ->
+    [ Element ] = xmerl_xpath:string(Context#arguments.xpath, Document),
+    Value = get_attribute_from(Context#arguments.name, Element),
+
+    {Context#arguments.name, Value}.
+
+handle_argument(<<"host=",  Host/binary>>, Record) -> Record#arguments{host  = binary_to_list(Host)};
+handle_argument(<<"port=",  Port/binary>>, Record) -> Record#arguments{port  = binary_to_list(Port)};
+handle_argument(<<"xpath=", Path/binary>>, Record) -> Record#arguments{xpath = binary_to_list(Path)};
+handle_argument(<<"name=",  Name/binary>>, Record) ->
+    Record#arguments{name  = list_to_existing_atom(binary_to_list(Name))}.
+
+parse_argument([ Arg | T ], Record) ->
+    NewRecord = handle_argument(Arg, Record),
+    parse_argument(T, NewRecord);
+parse_argument([], Record) ->
+    Record.
+
+parse_arguments(Args) -> parse_argument(Args, #arguments{}).
+
+main(FileName) ->
+    inets:start(),
+
+    {ok, Args} = file:read_file(FileName),
+    Context = parse_arguments(binary:split(Args, <<" ">>, [ global ])),
+
+    case request(Context) of
+        {error, E} ->
+            io:format("{ \"failed\": true, \"msg\": \"Cannot retrieve status page.\", \"details\": \"~s\" }", [ E ]),
+            halt(1);
+
+        {ok, Parse} ->
+            {Name, Value} = extract(Parse, Context),
+            io:format("{ \"changed\": true, \"name\": \"~s\", \"value\": \"~s\" }", [ Name, Value ]),
+            halt(0)
+    end.
