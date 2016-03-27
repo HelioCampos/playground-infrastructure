@@ -41,7 +41,7 @@ handle_argument(<<"host=",  Host/binary>>, Record) -> Record#arguments{host  = b
 handle_argument(<<"port=",  Port/binary>>, Record) -> Record#arguments{port  = binary_to_list(Port)};
 handle_argument(<<"xpath=", Path/binary>>, Record) -> Record#arguments{xpath = binary_to_list(Path)};
 handle_argument(<<"name=",  Name/binary>>, Record) ->
-    Record#arguments{name  = list_to_existing_atom(binary_to_list(Name))}.
+    Record#arguments{name = list_to_existing_atom(binary_to_list(Name))}.
 
 parse_argument([ Arg | T ], Record) ->
     NewRecord = handle_argument(Arg, Record),
